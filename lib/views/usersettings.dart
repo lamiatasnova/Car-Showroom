@@ -1,8 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_car_application/controllers/homecontroller.dart';
 import 'package:flutter_car_application/views/cartlist.dart';
+import 'package:flutter_car_application/views/changepassword.dart';
+import 'package:flutter_car_application/views/deleteaccount.dart';
+import 'package:flutter_car_application/views/wishlist.dart';
 
 import 'customerservice.dart';
+import 'desiredpreferences.dart';
 import 'home.dart';
 import 'orderchecklist.dart';
 
@@ -14,6 +19,7 @@ class UserSettings extends StatefulWidget {
 }
 
 class _UserSettingsState extends State<UserSettings> {
+  HomeController homeController = HomeController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +40,43 @@ class _UserSettingsState extends State<UserSettings> {
             const SizedBox(
               height: 20,
             ),
+            
+            //Change password
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()));
+              },
+              child: const Text("Change password"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+
+            //Delete account
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccount()));
+              },
+              child: const Text("Remove your account"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+
+            //Wishlist
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const Wishlist()));
+              },
+              child: const Text("Your wishlist"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const CustomerService()));
@@ -43,11 +86,21 @@ class _UserSettingsState extends State<UserSettings> {
             const SizedBox(
               height: 20,
             ),
+            
+
             ElevatedButton(
                 onPressed: () async {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const CartList()));
                 },
                 child: const Text("Your cart")),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DesiredPreferences()));
+                },
+                child: const Text("Your current preference")),
             const SizedBox(
               height: 20,
             ),

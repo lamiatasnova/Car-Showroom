@@ -1,7 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_car_application/controllers/homecontroller.dart';
+import 'package:flutter_car_application/views/searchresults.dart';
 import 'package:flutter_car_application/views/signin.dart';
 import 'package:flutter_car_application/views/signup.dart';
+
+import '../models/carmodel.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -15,6 +18,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    String searchQuery = "";
+    HomeController homeController = HomeController();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Welcome to Car Showroom'),
@@ -57,13 +63,34 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(
             height: 20,
           ),
+          SizedBox(
+            width: width * 0.9,
+            child: TextField(
+              decoration: InputDecoration(
+                  hintText: "Search",
+                  suffix: IconButton(
+                      onPressed: () {
+                        // search the list
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResults(searchQuery: searchQuery)));
+                      },
+                      icon: const Icon(
+                        Icons.search,
+                      ))),
+              onChanged: (val) {
+                searchQuery = val;
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           Expanded(
             child: FutureBuilder(
-                future: FirebaseFirestore.instance.collection("cars").get(),
-                builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                future: homeController.getCarList(),
+                builder: (context, AsyncSnapshot<List<CarModel>> snapshot) {
                   if (snapshot.hasData) {
-                    var carList = snapshot.data!.docs.toList();
-                    carList.sort(((a, b) => a["carCompany"].toString().compareTo(b["carCompany"].toString())));
+                    var carList = snapshot.data;
+                    carList!.sort(((a, b) => a.carCompany.toString().compareTo(b.carCompany.toString())));
                     return ListView.builder(
                         shrinkWrap: true,
                         itemCount: carList.length,
@@ -73,15 +100,16 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Column(
                               children: [
                                 Image.network(
-                                  carList[index]["carImageLink"],
+                                  carList[index].carImageLink!,
                                   height: 140,
                                 ),
-                                Text("Car company: ${carList[index]["carCompany"]}"),
-                                Text("Car model: ${carList[index]["carName"]}"),
-                                Text("Engine: ${carList[index]["carHorsePower"]}"),
-                                Text("Topspeed: ${carList[index]["carTopSpeed"]}"),
-                                Text("Price: \$ ${carList[index]["carPrice"]}"),
-                                carList[index]["totalCars"] == 0 ? const Text("Out of stock") : Text("Total cars available: ${carList[index]["totalCars"]}"),
+                                Text("Car company: ${carList[index].carCompany}"),
+                                Text("Car model: ${carList[index].carName}"),
+                                Text("Engine: ${carList[index].carHorsePower}"),
+                                Text("Topspeed: ${carList[index].carTopSpeed}"),
+                                Text("Category: ${carList[index].category}"),
+                                Text("Price: \$ ${carList[index].carPrice}"),
+                                carList[index].totalCars == 0 ? const Text("Out of stock") : Text("Total cars available: ${carList[index].totalCars}"),
                               ],
                             ),
                           );

@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_car_application/views/user_panel.dart';
+import 'package:flutter_car_application/controllers/signincontroller.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -15,6 +13,7 @@ class _SignInState extends State<SignIn> {
   var emailID = "";
   @override
   Widget build(BuildContext context) {
+    SignInController signInController = SignInController();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sign in"),
@@ -43,12 +42,7 @@ class _SignInState extends State<SignIn> {
             ),
             ElevatedButton(
                 onPressed: () async {
-                  try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailID, password: password);
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const UserPanel()), (route) => false);
-                  } catch (error) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Sign in failed")));
-                  }
+                  await signInController.signIn(context: context, emailID: emailID, password: password);
                 },
                 child: const Text("Submit")),
           ],

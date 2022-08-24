@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_car_application/main.dart';
+import 'package:flutter_car_application/views/adddiscount.dart';
+import 'package:flutter_car_application/views/showdiscountcodes.dart';
 
 import 'addcar.dart';
 import 'home.dart';
@@ -29,6 +30,22 @@ class _SysAdminState extends State<SysAdmin> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCars()));
                 },
                 child: const Text("Add cars")),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddDiscount()));
+                },
+                child: const Text("Add discount")),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ShowDiscountCodes()));
+                },
+                child: const Text("Show discount codes")),
             const SizedBox(
               height: 20,
             ),

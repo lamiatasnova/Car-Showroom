@@ -1,6 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_car_application/views/user_panel.dart';
+import 'package:flutter_car_application/controllers/addcarscontroller.dart';
+import 'package:flutter_car_application/datastore.dart';
+import 'package:flutter_car_application/models/carmodel.dart';
+import 'package:flutter_car_application/views/userpanel.dart';
 
 class AddCars extends StatefulWidget {
   const AddCars({Key? key}) : super(key: key);
@@ -10,15 +12,18 @@ class AddCars extends StatefulWidget {
 }
 
 class _AddCarsState extends State<AddCars> {
+  String cName = "";
+  String cCompany = "";
+  String cHP = "";
+  String cTP = "";
+  String cImage = "";
+  double price = 0;
+  int totalCars = 0;
+  String categoryDropDown = InformationStore.carCategory[0];
   @override
   Widget build(BuildContext context) {
-    String cName = "";
-    String cCompany = "";
-    String cHP = "";
-    String cTP = "";
-    String cImage = "";
-    double price = 0;
-    int totalCars = 0;
+    AddCarsController addCarsController = AddCarsController();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add cars"),
@@ -61,6 +66,27 @@ class _AddCarsState extends State<AddCars> {
                 cImage = val;
               },
             ),
+            const Text("Category"),
+            DropdownButton<String>(
+              value: categoryDropDown,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              underline: Container(
+                height: 2,
+              ),
+              onChanged: (String? newValue) {
+                setState(() {
+                  categoryDropDown = newValue!;
+                });
+              },
+              items: InformationStore.carCategory
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
             // Car price
             const Text("Car price"),
             TextField(
@@ -74,22 +100,28 @@ class _AddCarsState extends State<AddCars> {
                 totalCars = int.parse(val);
               },
             ),
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
                 onPressed: () async {
-                  FirebaseFirestore.instance.collection("cars").add({
-                    "carName": cName,
-                    "carCompany": cCompany,
-                    "carHorsePower": cHP,
-                    "carTopSpeed": cTP,
-                    "carImageLink": cImage,
-                    "carPrice": price,
-                    "totalCars": totalCars
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Added successfully"),
-                    duration: Duration(seconds: 5),
-                  ));
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const UserPanel()), (route) => false);
+                  addCarsController.addCarToDB(
+                      CarModel.fromJson({
+                        "carName": cName,
+                        "carCompany": cCompany,
+                        "carHorsePower": cHP,
+                        "carTopSpeed": cTP,
+                        "carImageLink": cImage,
+                        "carPrice": price,
+                        "totalCars": totalCars,
+                        "category": categoryDropDown,
+                      }),
+                      context);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserPanel()),
+                      (route) => false);
                 },
                 child: const Text("Submit")),
           ],

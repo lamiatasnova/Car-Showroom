@@ -3,7 +3,8 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_car_application/views/user_panel.dart';
+import 'package:flutter_car_application/controllers/signupcontroller.dart';
+import 'package:flutter_car_application/views/userpanel.dart';
 
 class SignUp extends StatelessWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class SignUp extends StatelessWidget {
     var password = "";
     var houseAddress = "";
     var phoneNumber = "";
+    SignUpController signUpController = SignUpController();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sign up"),
@@ -116,22 +118,7 @@ class SignUp extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () async {
-                  log("email is $email");
-                  if (email.isEmpty && password.isEmpty && houseAddress.isEmpty && phoneNumber.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Please fill the required data"),
-                      duration: Duration(seconds: 5),
-                    ));
-                  } else {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password).then((value) {
-                      String id = value.user!.uid;
-                      FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(id)
-                          .set({"email": email, "houseAddress": houseAddress, "phoneNumber": phoneNumber, "role": "user"});
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const UserPanel()), (route) => false);
-                    });
-                  }
+                  await signUpController.signUp(email, password, houseAddress, phoneNumber, context);
                 },
                 child: const Text("Submit")),
           ],

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_car_application/datastore.dart';
+import 'package:flutter_car_application/views/directtransfer.dart';
+import 'package:flutter_car_application/views/onspotpayment.dart';
 
 import 'cashondelivery.dart';
-import 'credit_card.dart';
+import 'creditcard.dart';
 import 'installmentpayment.dart';
 
 class PaymentPanel extends StatelessWidget {
@@ -19,6 +22,18 @@ class PaymentPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Text("Cart price: ${InformationStore.cartPrice}"),
+            const SizedBox(
+              height: 20,
+            ),
+            Text("Discount: ${InformationStore.discountPercentage}%"),
+            const SizedBox(
+              height: 20,
+            ),
+            Text("Total price after discount: ${InformationStore.finalPrice.toStringAsFixed(2)}"),
+            const SizedBox(
+              height: 50,
+            ),
             const Text("Choose your payment method"),
             const SizedBox(
               height: 20,
@@ -43,9 +58,27 @@ class PaymentPanel extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const DirectTransfer()));
+              },
+              child: const Text("Direct transfer"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const InstallmentPayment()));
               },
               child: const Text("Installment payment"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const OnSpotPayment()));
+              },
+              child: const Text("Onspot payment"),
             ),
           ],
         ),
